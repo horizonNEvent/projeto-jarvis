@@ -45,8 +45,8 @@ async def stream_chat(
     api_key: str,
     messages: list[dict[str, str]],
     model: str = "MiniMax-M2.7",
-    temperature: float = 0.7,
-    max_tokens: int = 1024,
+    temperature: float = 0.5,
+    max_tokens: int = 256,
     timeout: float = 30.0,
 ) -> AsyncIterator[tuple[str | None, dict | None]]:
     """Stream chat completions from Minimax API.
@@ -63,6 +63,7 @@ async def stream_chat(
         "stream": True,
         "temperature": temperature,
         "max_tokens": max_tokens,
+        "thinking": {"enabled": False},
     }
 
     in_think_block = False
@@ -83,7 +84,6 @@ async def stream_chat(
                     if in_think_block:
                         if "</think>" in content:
                             in_think_block = False
-                            # Keep any text after </think>
                             after = content.split("</think>", 1)[1].strip()
                             if after:
                                 yield after, usage
