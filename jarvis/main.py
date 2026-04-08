@@ -54,7 +54,7 @@ class Jarvis:
 
         piper_model_path = str(Path(config.piper_model_dir) / f"{config.piper_voice}.onnx")
         log.info("Loading TTS model (%s)...", config.piper_voice)
-        self.tts = PiperTTS(piper_model_path)
+        self.tts = PiperTTS(piper_model_path, piper_dir=config.piper_model_dir)
 
         log.info("Loading audio capture with VAD...")
         self.audio_capture = AudioCapture(

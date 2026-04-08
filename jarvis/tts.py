@@ -38,19 +38,30 @@ class SentenceSplitter:
 
 
 class PiperTTS:
-    """Synthesizes text to audio using Piper TTS (CPU)."""
+    """Synthesizes text to audio using Piper TTS standalone binary (CPU)."""
 
-    def __init__(self, model_path: str, sample_rate: int = 22050) -> None:
+    def __init__(self, model_path: str, piper_dir: str = "models/piper", sample_rate: int = 22050) -> None:
         self._model_path = model_path
+        self._piper_dir = Path(piper_dir)
         self.sample_rate = sample_rate
 
         if not Path(model_path).exists():
             raise FileNotFoundError(f"Piper model not found: {model_path}")
 
+        self._piper_exe = self._find_piper_exe()
+
+    def _find_piper_exe(self) -> str:
+        """Find piper executable — local binary or system PATH."""
+        local_exe = self._piper_dir / "piper.exe"
+        if local_exe.exists():
+            return str(local_exe)
+        # Fallback to system PATH
+        return "piper"
+
     def synthesize(self, text: str) -> np.ndarray:
         """Synthesize text to int16 numpy array."""
         cmd = [
-            "piper",
+            self._piper_exe,
             "--model", self._model_path,
             "--output-raw",
         ]
