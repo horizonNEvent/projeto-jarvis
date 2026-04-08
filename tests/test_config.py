@@ -6,7 +6,7 @@ def test_config_loads_from_env(monkeypatch, tmp_path):
     env_file = tmp_path / ".env"
     env_file.write_text(
         "MINIMAX_API_KEY=sk-test-123\n"
-        "MINIMAX_MODEL=MiniMax-Text-01\n"
+        "MINIMAX_MODEL=MiniMax-M2.7\n"
         "MAX_HISTORY=3\n"
         "LOG_TOKENS=false\n"
         "SILENCE_DURATION_MS=2000\n"
@@ -17,7 +17,7 @@ def test_config_loads_from_env(monkeypatch, tmp_path):
 
     cfg = load_config(str(env_file))
     assert cfg.minimax_api_key == "sk-test-123"
-    assert cfg.minimax_model == "MiniMax-Text-01"
+    assert cfg.minimax_model == "MiniMax-M2.7"
     assert cfg.max_history == 3
     assert cfg.log_tokens is False
     assert cfg.silence_duration_ms == 2000

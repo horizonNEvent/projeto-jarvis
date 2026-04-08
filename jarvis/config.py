@@ -9,7 +9,7 @@ from dotenv import dotenv_values
 @dataclass(frozen=True)
 class Config:
     minimax_api_key: str
-    minimax_model: str = "MiniMax-Text-01"
+    minimax_model: str = "MiniMax-M2.7"
     hotkey: str = "ctrl+alt+j"
     wake_word: str = "hey_jarvis"
     whisper_model: str = "large-v3"
@@ -41,7 +41,7 @@ def load_config(env_path: str = ".env") -> Config:
 
     return Config(
         minimax_api_key=api_key,
-        minimax_model=_get(values, "MINIMAX_MODEL", "MiniMax-Text-01"),
+        minimax_model=_get(values, "MINIMAX_MODEL", "MiniMax-M2.7"),
         hotkey=_get(values, "HOTKEY", "ctrl+alt+j"),
         wake_word=_get(values, "WAKE_WORD", "hey_jarvis"),
         whisper_model=_get(values, "WHISPER_MODEL", "large-v3"),
