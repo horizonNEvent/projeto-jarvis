@@ -1,7 +1,6 @@
 """Download required models and binaries for Jarvis."""
 
 import subprocess
-import sys
 import zipfile
 from pathlib import Path
 
@@ -12,35 +11,28 @@ PIPER_VOICE_FILES = [
     "pt_BR-faber-medium.onnx.json",
 ]
 PIPER_BINARY_URL = "https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip"
-PIPER_BINARY_ZIP = "piper_windows_amd64.zip"
 
 
 def download_piper_binary() -> None:
-    """Download the standalone piper.exe binary for Windows."""
+    """Download and extract the standalone piper.exe binary for Windows."""
     piper_exe = PIPER_DIR / "piper.exe"
     if piper_exe.exists():
         print("  [skip] piper.exe already exists")
         return
 
     PIPER_DIR.mkdir(parents=True, exist_ok=True)
-    zip_path = PIPER_DIR / PIPER_BINARY_ZIP
+    zip_path = PIPER_DIR / "piper_windows_amd64.zip"
 
-    print("  [download] piper_windows_amd64.zip (~30MB)...")
+    print("  [download] piper_windows_amd64.zip (~21MB)...")
     subprocess.run(
         ["curl", "-L", "-o", str(zip_path), PIPER_BINARY_URL],
         check=True,
     )
 
-    print("  [extract] extracting piper binary...")
+    print("  [extract] extracting piper binary with directory structure...")
     with zipfile.ZipFile(zip_path, "r") as zf:
-        # Files inside zip are in a "piper/" subfolder
-        for member in zf.namelist():
-            filename = Path(member).name
-            if not filename:
-                continue
-            target = PIPER_DIR / filename
-            with zf.open(member) as source, open(target, "wb") as dest:
-                dest.write(source.read())
+        # Zip contains piper/ prefix — extract to models/ so it becomes models/piper/
+        zf.extractall("models/")
 
     zip_path.unlink()
     print("  Piper binary ready.")
